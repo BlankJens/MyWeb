@@ -1,3 +1,9 @@
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
 FROM openjdk:22-jdk
-ADD target/MyWeb.jar MyWeb.jar
+WORKDIR /app
+COPY --from=build /app/target/*.jar MyWeb.jar
 ENTRYPOINT [ "java", "-jar", "/MyWeb.jar" ]
