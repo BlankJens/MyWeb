@@ -6,4 +6,4 @@ RUN mvn clean package -DskipTests
 FROM openjdk:22-jdk
 WORKDIR /app
 COPY --from=build /app/target/*.jar MyWeb.jar
-ENTRYPOINT [ "java", "-jar", "/MyWeb.jar" ]
+ENTRYPOINT [ "java", "-jar", "MyWeb.jar" ]
