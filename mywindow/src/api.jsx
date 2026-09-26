@@ -3,15 +3,13 @@ export const getProducts = async () => {
   return response.json();
 };
 
-export const createProduct = async (productData) => {
+export const createProduct = async (formDataPayload) => {
   await fetch('/api/products', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(productData),
+    body: formDataPayload, 
   });
 };
+
 
 export const deleteProduct = async (productId) => {
   await fetch(`/api/products/${productId}`, {

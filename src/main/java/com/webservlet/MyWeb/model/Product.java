@@ -13,9 +13,9 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer prodId; 
-	
 	private String prodName;
 	private int price;
+	private String imageUrl;
 	
 	public Product() {}
 	
@@ -46,6 +46,14 @@ public class Product {
 
 	public void setPrice(int price) {
 		this.price = price;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	
 	@Override

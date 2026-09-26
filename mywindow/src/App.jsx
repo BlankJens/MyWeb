@@ -3,57 +3,36 @@ import { getProducts, deleteProduct, createProduct } from "./api";
 import "./App.css";
 
 function App() {
-  const [products, setProducts] = useState([]);
-  const [view, setView] = useState("list");
-  const [formData, setFormData] = useState({ prodName: "", price: "" });
-
-  const loadProducts = async () => {
-    try {
-      const data = await getProducts();
-      setProducts(data);
-    } catch (error) {
-      console.error("Erro ao buscar produtos:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (view === "list") {
-      loadProducts();
-    }
-  }, [view]);
-
-  const formatPrice = (price) => {
-    return Number(price).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  };
-
-  const handleRemove = async (id) => {
-    try {
-      await deleteProduct(id);
-      loadProducts();
-    } catch (error) {
-      console.error("Erro ao remover produto:", error);
-    }
-  };
+  const [formData, setFormData] = useState({
+    prodName: "",
+    price: "",
+    image: null,
+  });
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      setFormData({ ...formData, image: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createProduct({
-        prodName: formData.prodName,
-        price: Number(formData.price),
-      });
-      setFormData({ prodName: "", price: "" });
+      const data = new FormData();
+      data.append("prodName", formData.prodName);
+      data.append("price", Number(formData.price));
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
+      await createProduct(data);
+      setFormData({ prodName: "", price: "", image: null });
       setView("list");
     } catch (error) {
-      console.error("Erro ao criar produto:", error);
+      console.error(error);
     }
   };
 
@@ -78,6 +57,13 @@ function App() {
             onChange={handleInputChange}
             required
           />
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={handleInputChange}
+          />
+
           <div className="form-buttons">
             <button type="submit" className="btn btn-success">
               Salvar
@@ -106,6 +92,17 @@ function App() {
       <ul className="product-list">
         {products.map((product) => (
           <li key={product.prodId} className="product-card">
+            <img
+              src={product.imageUrl}
+              alt={product.prodName}
+              style={{
+                width: "150px",
+                height: "150px",
+                objectFit: "cover",
+                borderRadius: "8px",
+                marginBottom: "10px",
+              }}
+            />
             <span className="product-name">{product.prodName}</span>
             <span className="product-price">{formatPrice(product.price)}</span>
             <button
