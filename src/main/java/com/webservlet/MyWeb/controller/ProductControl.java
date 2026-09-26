@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -47,24 +48,23 @@ public class ProductControl {
 	
 	@PostMapping(value = "/api/products", consumes = {"multipart/form-data"})
 	public ResponseEntity<String> addProduct(
-			@RequestParam("prodName") String prodName,
-			@RequestParam("price") int price,
-			@RequestParam(value = "image", required = false) MultipartFile imageFile) {
-		
+        @ModelAttribute Product prod, 
+        @RequestParam(value = "image", required = false) MultipartFile imageFile) {
+    
 		try {
-			Product prod = new Product();
-			prod.setProdName(prodName);
-			prod.setPrice(price);
+			System.out.println("Recebendo produto: " + prod.getProdName());
 			
 			if (imageFile != null && !imageFile.isEmpty()) {
 				String url = cloudinaryService.uploadImage(imageFile);
-				prod.setImageUrl(url);
-			} else {
+				prod.setImageUrl(url); 
+			} else if (prod.getImageUrl() == null || prod.getImageUrl().isEmpty()) {
 				prod.setImageUrl("https://placeholders.dev");
 			}
+			
 			service.addProduct(prod);
-			return new ResponseEntity<>("Produto criado!", HttpStatus.CREATED);
+			return new ResponseEntity<>("Produto criado com sucesso!", HttpStatus.CREATED);
 		} catch (Exception e) {
+			System.out.println("Erro no cadastro: " + e.getMessage());
 			return new ResponseEntity<>("Erro no upload: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
