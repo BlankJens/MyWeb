@@ -48,26 +48,30 @@ public class ProductControl {
 	
 	@PostMapping(value = "/api/products", consumes = {"multipart/form-data"})
 	public ResponseEntity<String> addProduct(
-        @ModelAttribute Product prod, 
-        @RequestParam(value = "image", required = false) MultipartFile imageFile) {
-    
+			@ModelAttribute Product prod, 
+			@RequestParam(value = "image", required = false) MultipartFile imageFile) {
+		
 		try {
-			System.out.println("Recebendo produto: " + prod.getProdName());
+			System.out.println("Tentando cadastrar o produto: " + prod.getProdName());
 			
 			if (imageFile != null && !imageFile.isEmpty()) {
+				System.out.println("Arquivo de imagem recebido. Iniciando upload para o Cloudinary...");
 				String url = cloudinaryService.uploadImage(imageFile);
 				prod.setImageUrl(url); 
-			} else if (prod.getImageUrl() == null || prod.getImageUrl().isEmpty()) {
+			} else {
+				System.out.println("Nenhuma imagem enviada. Aplicando imagem substituta padrão.");
 				prod.setImageUrl("https://placeholders.dev");
 			}
 			
 			service.addProduct(prod);
 			return new ResponseEntity<>("Produto criado com sucesso!", HttpStatus.CREATED);
 		} catch (Exception e) {
-			System.out.println("Erro no cadastro: " + e.getMessage());
-			return new ResponseEntity<>("Erro no upload: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			System.err.println("CRÍTICO: Falha no processo de cadastro do produto!");
+			e.printStackTrace(); 
+			return new ResponseEntity<>("Erro interno: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
 	
 	@PutMapping("/api/products")
 	public void updateProduct(@RequestBody Product prod) {
