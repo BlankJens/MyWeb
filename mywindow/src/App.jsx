@@ -53,16 +53,14 @@ function App() {
       const data = new FormData();
       data.append('prodName', formData.prodName);
       data.append('price', Number(formData.price));
-      
       if (formData.image) {
-        data.append('image', formData.image);
+        data.append('image', formData.image); 
       }
-
       await createProduct(data);
       setFormData({ prodName: '', price: '', image: null });
       setView('list');
     } catch (error) {
-      console.error("Erro ao salvar produto:", error);
+      console.error("Erro no envio:", error);
     }
   };
 
@@ -89,7 +87,7 @@ function App() {
           />
           <input
             type="file"
-            name="image"
+            name="image"   
             accept="image/*"
             onChange={handleInputChange}
           />
