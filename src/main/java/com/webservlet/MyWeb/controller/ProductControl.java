@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.webservlet.MyWeb.model.Product;
 import com.webservlet.MyWeb.service.ProductService;
 
-@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 public class ProductControl {
 
