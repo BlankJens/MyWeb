@@ -1,10 +1,10 @@
 export const getProducts = async () => {
-  const response = await fetch('http://localhost:8080/api/products');
+  const response = await fetch('/api/products');
   return response.json();
 };
 
 export const createProduct = async (productData) => {
-  await fetch('http://localhost:8080/api/products', {
+  await fetch('/api/products', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ export const createProduct = async (productData) => {
 };
 
 export const deleteProduct = async (productId) => {
-  await fetch(`http://localhost:8080/api/products/${productId}`, {
+  await fetch(`/api/products/${productId}`, {
     method: 'DELETE',
   });
 };
