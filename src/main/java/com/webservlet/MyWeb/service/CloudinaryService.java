@@ -14,17 +14,23 @@ public class CloudinaryService {
     private final Cloudinary cloudinary;
 
     public CloudinaryService(
-            @Value("${cloudinary.cloud-name}") String cloudName,
-            @Value("${cloudinary.api-key}") String apiKey,
-            @Value("${cloudinary.api-secret}") String apiSecret) {
+        @Value("${cloudinary.cloud-name:}") String cloudName,
+        @Value("${cloudinary.api-key:}") String apiKey,
+        @Value("${cloudinary.api-secret:}") String apiSecret) {
+    
+        if (cloudName.isEmpty() || apiKey.isEmpty() || apiSecret.isEmpty()) {
+            throw new IllegalArgumentException("As credenciais do Cloudinary não foram configuradas!");
+        }
         
         this.cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", cloudName,
                 "api_key", apiKey,
                 "api_secret", apiSecret,
-                "secure", true
+                "secure", true,
+                "api_proxy", ""
         ));
     }
+
 
     public String uploadImage(MultipartFile file) throws IOException {
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
