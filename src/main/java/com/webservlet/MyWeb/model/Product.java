@@ -1,37 +1,34 @@
 package com.webservlet.MyWeb.model;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-@Component
 @Entity
 @Table
 public class Product {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int prodId;
+	private Integer prodId; 
+	
 	private String prodName;
 	private int price;
 	
-	public Product(int prodId, String prodName, int price) {
-		super();
-		this.prodId = prodId;
+	public Product() {}
+	
+	public Product(String prodName, int price) {
 		this.prodName = prodName;
 		this.price = price;
 	}
 
-	public Product() {}
-	
-	public int getProdId() {
+	public Integer getProdId() {
 		return prodId;
 	}
 
-	public void setProdId(int prodId) {
+	public void setProdId(Integer prodId) {
 		this.prodId = prodId;
 	}
 
