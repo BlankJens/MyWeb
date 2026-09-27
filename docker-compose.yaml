@@ -6,11 +6,11 @@ services:
   ports:
    - "8080:8080"
   environment:
-   DB_HOST: mysql
-   DB_PORT: 3306
-   DB_NAME: myweb
-   DB_USER: usr
-   DB_PASSWORD: 1234
+   # NAO fixe DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD aqui. Literais neste
+   # bloco sobrescrevem as variaveis injetadas pelo ambiente de deploy e fazem
+   # a app tentar conectar num host "mysql" que nao existe la. Os defaults
+   # estao em src/main/resources/application.properties.
+   #
    # ":?" faz o docker compose abortar na hora com mensagem clara,
    # em vez de a aplicacao subir e quebrar por placeholder nao resolvido.
    CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:?defina CLOUDINARY_CLOUD_NAME no .env}
@@ -33,10 +33,13 @@ services:
   ports:
    - 3307:3306
   healthcheck:
-   test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+   test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
    interval: 5s
    timeout: 5s
-   retries: 10
+   retries: 15
+   # Sem start_period, um volume novo faz o MySQL demorar mais que os 50s de
+   # retries e o primeiro deploy morre antes do banco ficar pronto.
+   start_period: 40s
   networks:
    - my-network
   volumes:
