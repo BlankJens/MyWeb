@@ -83,6 +83,17 @@ body {
   gap: 20px;
 }
 
+.error-message {
+  grid-column: 1 / -1;
+  background-color: #fdecea;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  padding: 12px 15px;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
 .product-card {
   background: #ffffff;
   border-radius: 10px;

@@ -60,7 +60,7 @@ public class ProductControl {
 				prod.setImageUrl(url); 
 			} else {
 				System.out.println("Nenhuma imagem enviada. Aplicando imagem substituta padrão.");
-				prod.setImageUrl("https://placeholders.dev");
+				prod.setImageUrl("https://placehold.co/150x150.png");
 			}
 			
 			service.addProduct(prod);

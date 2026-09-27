@@ -5,14 +5,17 @@ import './App.css';
 function App() {
   const [products, setProducts] = useState([]);
   const [view, setView] = useState('list');
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({ prodName: '', price: '', image: null });
 
   const loadProducts = async () => {
     try {
       const data = await getProducts();
       setProducts(data);
+      setError('');
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
+      setError('Não foi possível carregar os produtos.');
     }
   };
 
@@ -35,6 +38,7 @@ function App() {
       loadProducts();
     } catch (error) {
       console.error("Erro ao remover produto:", error);
+      setError('Não foi possível remover o produto.');
     }
   };
 
@@ -54,13 +58,15 @@ function App() {
       data.append('prodName', formData.prodName);
       data.append('price', Number(formData.price));
       if (formData.image) {
-        data.append('image', formData.image); 
+        data.append('image', formData.image);
       }
       await createProduct(data);
       setFormData({ prodName: '', price: '', image: null });
+      setError('');
       setView('list');
     } catch (error) {
       console.error("Erro no envio:", error);
+      setError(`Não foi possível salvar: ${error.message}`);
     }
   };
 
@@ -87,10 +93,11 @@ function App() {
           />
           <input
             type="file"
-            name="image"   
+            name="image"
             accept="image/*"
             onChange={handleInputChange}
           />
+          {error && <p className="error-message">{error}</p>}
           <div className="form-buttons">
             <button type="submit" className="btn btn-success">Salvar</button>
             <button type="button" className="btn btn-secondary" onClick={() => setView('list')}>Voltar</button>
@@ -109,6 +116,7 @@ function App() {
         </button>
       </div>
       <ul className="product-list">
+        {error && <p className="error-message">{error}</p>}
         {products && products.map((product) => (
           <li key={product.prodId} className="product-card">
             <img 

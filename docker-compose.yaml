@@ -5,6 +5,19 @@ services:
   build: .
   ports:
    - "8080:8080"
+  environment:
+   DB_HOST: mysql
+   DB_PORT: 3306
+   DB_NAME: myweb
+   DB_USER: usr
+   DB_PASSWORD: 1234
+   # ":?" faz o docker compose abortar na hora com mensagem clara,
+   # em vez de a aplicacao subir e quebrar por placeholder nao resolvido.
+   CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:?defina CLOUDINARY_CLOUD_NAME no .env}
+   CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:?defina CLOUDINARY_API_KEY no .env}
+   CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:?defina CLOUDINARY_API_SECRET no .env}
+   # Opcional: upload assinado nao exige preset. Deixe vazio para nao usar.
+   CLOUDINARY_UPLOAD_PRESET: ${CLOUDINARY_UPLOAD_PRESET:-}
   depends_on:
    mysql:
     condition: service_healthy

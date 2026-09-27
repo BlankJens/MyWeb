@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -34,13 +35,20 @@ public class CloudinaryService {
     }
 
     public String uploadImage(MultipartFile file) throws IOException {
-        Map uploadOptions = ObjectUtils.asMap(
-            "upload_preset", uploadPreset,
-            "resource_type", "auto",
-            "type", "upload"
-        );
-        
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadOptions);
+        Map<String, Object> uploadOptions = new HashMap<>();
+
+        // Este upload e assinado (api_key/api_secret no Cloudinary), e a
+        // documentacao define upload_preset como "optional for signed uploading".
+        // So enviamos o preset se ele estiver configurado: um preset vazio ou
+        // inexistente faz a API recusar o upload.
+        if (uploadPreset != null && !uploadPreset.isBlank()) {
+            uploadOptions.put("upload_preset", uploadPreset);
+        }
+
+        uploadOptions.put("resource_type", "auto");
+        uploadOptions.put("type", "upload");
+
+        Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadOptions);
         return uploadResult.get("secure_url").toString();
     }
 
